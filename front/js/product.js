@@ -57,7 +57,7 @@ boutonPanier.addEventListener("click" , function(e) {                  // la qua
     color : color.value,                                               // couleur du produit 
     quantity : quantity.value,                                         // la quantiter du produit
   }
-  
+
   panier = JSON.parse(localStorage.getItem("produit"));                             
   if (panier){                                                         // si panier = true ( vrai ) donc le panier existe vraiment
     panier.push(optionProduit);                                        // on pushera les nouvelles info dans le localstorage                               
