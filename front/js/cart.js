@@ -3,6 +3,8 @@ let panier = JSON.parse(localStorage.getItem("produit"));                       
 
 let products;                                                                                                 // on declare une variable product
 let product;
+let prixTotal = 0;
+let prixProduit = 0;
 
 let panierAfficher = [];
 const getProduct = async () => {                                                                              // on cree une constante pour obtenir les produits sur le site
@@ -20,6 +22,8 @@ const getProduct = async () => {                                                
         panierAfficher = [];                                                          // on cree un nouveau tableau pour afficher le panier sur la page
         for (i = 0; i < panier.length; i++) {                                         // on cree une boucle qui sera repeter pour chaque nouveau element
             product = products.filter(prod => prod._id === panier[i].id);
+            prixProduit = product[0].price;
+            prixTotal = prixTotal + prixProduit;
             panierAfficher =                                                          // on dit que panier afficher = le tableau + le html avec des element pris dans l'api + localstorage
                 panierAfficher +
                 `
@@ -49,12 +53,11 @@ const getProduct = async () => {                                                
         if (i === panier.length) {                                                        // on ajoute les elements
             elementPanier.innerHTML = panierAfficher;
         }
+        
+        
+        let prixTotaux = document.getElementById('totalPrice');
+        prixTotaux.innerHTML = prixTotal;
 
-        // ajout des prix
-        let prixTotaux =[];
-        for (let prix = 0; prix < product.length; prix++){
-          console.log(product[prix].price);
-        }
 
 
 
