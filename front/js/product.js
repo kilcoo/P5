@@ -67,6 +67,12 @@ boutonPanier.addEventListener("click" , function(e) {                  // la qua
     panier.push(optionProduit);                                        // puis nous ajoutons les produits selectionner avec option produit
     localStorage.setItem("produit" ,JSON.stringify(panier));           // nous créeons une cle pour le local storage
   }
+  // pour la quantiter du produit 
+  if(panier.quantity < 1){
+    panier.push
+  }else {
+    panier = []
+  }
 })
 
 

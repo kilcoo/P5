@@ -54,11 +54,14 @@ const getProduct = async () => {                                                
             elementPanier.innerHTML = panierAfficher;
         }
         
-        
+        // ajout des prix totaux
+
         let prixTotaux = document.getElementById('totalPrice');
         prixTotaux.innerHTML = prixTotal;
 
+       
 
+        
 
 
         // supprimer element
@@ -69,7 +72,17 @@ const getProduct = async () => {                                                
             supprimer[q].addEventListener("click", (event) =>{                            // on va mettre un add event listener pour le bouton supprimer
                 event.preventDefault();                                                   // pour ne pas recharger la page
                 let elementSupprimer = panier[q].id;                                      // on cree une variable qui sera supprimer en utilisant l'id
-                panier = panier.filter(element => element.id !== elementSupprimer)        // on utilise la methode filter pour retirer l'element ou j'ai appuyer sur supprimer
+                let monFilter = {
+                  id : panier[q].id,
+                  color : panier[q].color
+              };
+              panier= panier.filter(function(item) {
+                  for (var key in monFilter) {
+                      if (item[key] != monFilter[key])
+                          return true;
+                  }
+                  return false;
+              });
                 localStorage.setItem("produit" ,JSON.stringify(panier));                  // on met a jour la clee
                 window.location.href = "cart.html";                                       // on actualise la page
             });
