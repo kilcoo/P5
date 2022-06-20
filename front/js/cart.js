@@ -1,6 +1,5 @@
 //Init local storage
 let produitLocalStorage = JSON.parse (localStorage.getItem("produit"));
-const positionEmptyCart = document.querySelector("#cart__items");
 
 let totalPrice = 0;
 
@@ -10,9 +9,7 @@ function getCart()
 //Si panier vide, afficher le message "panier vide"
 if (produitLocalStorage === null || produitLocalStorage == 0) 
 {
-    const emptyCart = `<p>Votre panier est vide !</p>`;
-    positionEmptyCart.innerHTML = emptyCart;
-    alert ("veuillez ajouter un produit au panier")
+    
     return
 }
 else 
@@ -120,7 +117,7 @@ if (productQte.value <=0 )
  productItemContentSettings.appendChild(productItemContentSettingsDelete);
  productItemContentSettingsDelete.className = "cart__item__content__settings__delete";
 
- // Insertion  supprimer
+ // Insertion supprimer
  let productSupprimer = document.createElement("p");
  productItemContentSettingsDelete.appendChild(productSupprimer);
  productSupprimer.className = "deleteItem";
@@ -236,9 +233,7 @@ else if (event.target.value >100)
 
 
 }
-
-    // On construit un formulaire avec des fonctions régulières (regex)
-   
+// On construit un formulaire avec des fonctions régulières (regex)
    let validNameRegExp = new RegExp ("^[a-zA-Z ,.'-]+$");
    let emailRegExp = new RegExp ("^[a-zA-Z0-9.-_]+[@]{1}[a-zA-Z0-9.-_]+[.]{1}[a-z]{2,10}$");
    let addressRegExp = new RegExp ("^([0-9]*) ?([a-zA-Z,\. ]*)$");

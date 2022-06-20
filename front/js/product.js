@@ -8,7 +8,7 @@ let article = "";
 const colorPicked = document. querySelector("#colors");
 const quantityPicked = document.querySelector("#quantity");
 
-getArticle();
+
 
 // Récupération des articles de l'API
 function getArticle() {
@@ -29,6 +29,7 @@ function getArticle() {
         console.log("Erreur de la requête API");
     })
 }
+getArticle();
      // insertion des information concernant les kanaP
 function getPost(article){
     // Insertion de l'image
@@ -79,11 +80,6 @@ function addToCart(article) {
         idProduit: idProduct,
         couleurProduit: choixCouleur,
         quantiteProduit: Number(choixQuantite),
-        nomProduit: article.name,
-        prixProduit: article.price,
-        descriptionProduit: article.description,
-        imgProduit: article.imageUrl,
-        altImgProduit: article.altTxt
     };
 
     //Initialisation du local storage
@@ -102,13 +98,11 @@ function addToCart(article) {
             resultFind.quantiteProduit = newQuantite;
             localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
             console.table(produitLocalStorage);
-            popupConfirmation();
         //Si le produit commandé n'est pas dans le panier
         } else {
             produitLocalStorage.push(optionsProduit);
             localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
             console.table(produitLocalStorage);
-            popupConfirmation();
         }
     //Si le panier est vide
     } else {
@@ -116,7 +110,6 @@ function addToCart(article) {
         produitLocalStorage.push(optionsProduit);
         localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
         console.table(produitLocalStorage);
-        popupConfirmation();
     }}
     });
 }
