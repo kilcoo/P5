@@ -1,76 +1,122 @@
-let productId = new URL(window.location.href).searchParams.get('id')    // on recupere l'id grace au lien
+var str = window.location.href;
+var url = new URL(str);
+var idProduct = url.searchParams.get("id");
+console.log(idProduct);
+// une variable pour stocker les kanap
+let article = "";
 
-let product;                                                            // on declare une variable product
-const getProduct = async () => {                                        // on cree une constante pour obtenir les produits sur le site
-  await fetch('http://localhost:3000/api/products/' + productId)        // ajout des produits sur le site grace a l'api avec fetch 
-  .then(res => res.json())                                              // 
-  .then(JSON => product = JSON)                                         //
-  .catch((err) => console.log(err));                                    // pour afficher les erreurs si il y a des erreurs
-  console.log(product)
-  }
+const colorPicked = document. querySelector("#colors");
+const quantityPicked = document.querySelector("#quantity");
 
-const showProduct = async () => {            
-  await getProduct();                                              // en attente du produit                   
-  let picture = document.querySelector(".item__img")               // nous utilisons le DOM pour recuperer un element dans le html puis pour le donner une nouvelle variable
-  let imageUrl = document.createElement('img')                     // nous utilisons le DOM pour recuperer un element dans le html puis pour le donner une nouvelle variable
-  imageUrl.setAttribute('src', product.imageUrl)                   // nous mettons a jour l'attribut src par product.imageUrl
-  imageUrl.setAttribute('alt', product.altTxt)                     // nous mettons a jour l'attribut alt par product.altTxt
-  picture.appendChild(imageUrl)                                    // nous disons que picture est l'enfant de imageUrl
+getArticle();
 
-  let name = document.getElementById('title')                      // nous donnons a title une nouvelle variable 
-  name.innerHTML = product.name;                                   
+// Récupération des articles de l'API
+function getArticle() {
+    fetch("http://localhost:3000/api/products/" + idProduct)
+    .then((res) => {
+        return res.json();
+    })
 
-  let price = document.getElementById('price')                     // nous donnons une nouvelle variable a price (ou pas)
-  price.innerHTML = product.price;
+    // Répartition des données de l'API dans le DOM
+    .then(async function (resultatAPI) {
+        article = await resultatAPI;
+        console.table(article);
+        if (article){
+            getPost(article);
+        }
+    })
+    .catch((error) => {
+        console.log("Erreur de la requête API");
+    })
+}
+     // insertion des information concernant les kanaP
+function getPost(article){
+    // Insertion de l'image
+    let productImg = document.createElement("img");
+    document.querySelector(".item__img").appendChild(productImg);
+    productImg.src = article.imageUrl;
+    productImg.alt = article.altTxt;
 
-  let description = document.getElementById('description')         // nous donnons une nouvelle variable a price (ou pas)
-  description.innerHTML = product.description;
+    // Modification du titre "h1"
+    let productName = document.getElementById('title');
+    productName.innerHTML = article.name;
 
-  for (let i = 0; i < product.colors.length; i++) {               // on dit que i = 0 est que product.colors.length doit etre supperieur a 0 on met i++ pour dire qu'il faudra ajouter 1
-  let colors = document.getElementById('colors')                  // nous donnons une nouvelle variable a colors (ou pas)
-  let color = document.createElement('option')                    // nous donnons une nouvelle variable a option
-  color.innerHTML = product.colors[i]                              
-  colors.appendChild(color)                                       
-  }
+    // Modification du prix
+    let productPrice = document.getElementById('price');
+    productPrice.innerHTML = article.price;
 
-  for (let i = 0; i < product.quantity; i++) {                    // on dit que i = 0 est que product.quantity.length doit etre supperieur a 0 on met i++ pour dire qu'il faudra ajouter 1
-    let quantity = document.getElementById('quantity')            // nous donnons une nouvelle variable a quantity (ou pas)
-    quantity.setAttribute('value', product.quantity[i])
-    quantity.innerHTML = product.quantity[i]
-    quantity.appendChild(quantity)
+    // Modification de la description
+    let productDescription = document.getElementById('description');
+    productDescription.innerHTML = article.description;
+
+    // Insertion des options de couleurs
+    for (let colors of article.colors){
+        console.table(colors);
+        let productColors = document.createElement("option");
+        document.querySelector("#colors").appendChild(productColors);
+        productColors.value = colors;
+        productColors.innerHTML = colors;
     }
-
-}
-let panier;                                                            // je cree la variable panier
-let optionProduit;                                                    // je cree la variable option produit
-let color = document.getElementById('colors');
-
-function stockagePanier(panier) {                                      //creation de la clé avec les info 
-  localStorage.setItem("panier" ,JSON.stringify(panier));
+    addToCart(article);
 }
 
+    //Gestion du panier
+function addToCart(article) {
+    const btn_envoyerPanier = document.querySelector("#addToCart");
 
-const boutonPanier = document.getElementById('addToCart');             // la je selectionne l'id dans le html
-boutonPanier.addEventListener("click" , function(e) {                  // la quand je clique sur le btn il devra ajouter le produit dans le panier
-   optionProduit = {                                                   // on recupere les option choisi par l'utilisateur 
-    id: productId,                                                     // id du produit
-    color : color.value,                                               // couleur du produit 
-    quantity : quantity.value,                                         // la quantiter du produit
-  }
+    //Ecouter le panier avec 2 conditions couleur non nulle et quantité entre 1 et 100
+    btn_envoyerPanier.addEventListener("click", (event)=>{
+        if (quantityPicked.value > 0 && quantityPicked.value <=100 && quantityPicked.value != 0){
 
-  panier = JSON.parse(localStorage.getItem("produit"));                             
-  if (panier){                                                         // si panier = true ( vrai ) donc le panier existe vraiment
-    panier.push(optionProduit);                                        // on pushera les nouvelles info dans le localstorage                               
-    localStorage.setItem("produit" ,JSON.stringify(panier));           // nous envoyons les nouveaux produit dans le local storage avec la meme cle
-  }else {                                                              // sinon
-    panier = [];                                                       // nous créerons un panier 
-    panier.push(optionProduit);                                        // puis nous ajoutons les produits selectionner avec option produit
-    localStorage.setItem("produit" ,JSON.stringify(panier));           // nous créeons une cle pour le local storage
-  }
-})
+    //Recupération du choix de la couleur
+    let choixCouleur = colorPicked.value;
+                
+    //Recupération du choix de la quantité
+    let choixQuantite = quantityPicked.value;
+
+    //Récupération des options de l'article à ajouter au panier
+    let optionsProduit = {
+        idProduit: idProduct,
+        couleurProduit: choixCouleur,
+        quantiteProduit: Number(choixQuantite),
+        nomProduit: article.name,
+        prixProduit: article.price,
+        descriptionProduit: article.description,
+        imgProduit: article.imageUrl,
+        altImgProduit: article.altTxt
+    };
+
+    //Initialisation du local storage
+    let produitLocalStorage = JSON.parse(localStorage.getItem("produit"));
 
 
-
-
-
-showProduct();
+    //Importation dans le local storage
+    //Si le panier comporte déjà au moins 1 article
+    if (produitLocalStorage) {
+    const resultFind = produitLocalStorage.find(
+        (el) => el.idProduit === idProduct && el.couleurProduit === choixCouleur);
+        //Si le produit commandé est déjà dans le panier
+        if (resultFind) {
+            let newQuantite =
+            parseInt(optionsProduit.quantiteProduit) + parseInt(resultFind.quantiteProduit);
+            resultFind.quantiteProduit = newQuantite;
+            localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
+            console.table(produitLocalStorage);
+            popupConfirmation();
+        //Si le produit commandé n'est pas dans le panier
+        } else {
+            produitLocalStorage.push(optionsProduit);
+            localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
+            console.table(produitLocalStorage);
+            popupConfirmation();
+        }
+    //Si le panier est vide
+    } else {
+        produitLocalStorage =[];
+        produitLocalStorage.push(optionsProduit);
+        localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
+        console.table(produitLocalStorage);
+        popupConfirmation();
+    }}
+    });
+}
