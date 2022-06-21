@@ -131,23 +131,6 @@ changeQtt();
 }}
 getCart();
 
-// Total des quantités
-
-function getTotalsQtt() 
-{
- 
- let quantityTotal = 0;
-
- for (let i = 0; i < produitLocalStorage.length; i++) 
-{
-    quantityTotal += produitLocalStorage[i].quantiteProduit;
-}
-
-let productTotalQuantity = document.getElementById("totalQuantity");
-productTotalQuantity.innerHTML = quantityTotal;
-
-}
-getTotalsQtt();
 
 // Pour supprimer un article panier
 
