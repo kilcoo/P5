@@ -2,13 +2,12 @@ var str = window.location.href;
 var url = new URL(str);
 var idProduct = url.searchParams.get("id");
 console.log(idProduct);
-// une variable pour stocker les kanap
 let article = "";
 
 const colorPicked = document. querySelector("#colors");
 const quantityPicked = document.querySelector("#quantity");
 
-
+getArticle();
 
 // Récupération des articles de l'API
 function getArticle() {
@@ -29,8 +28,8 @@ function getArticle() {
         console.log("Erreur de la requête API");
     })
 }
-getArticle();
-     // insertion des information concernant les kanaP
+
+
 function getPost(article){
     // Insertion de l'image
     let productImg = document.createElement("img");
@@ -67,23 +66,38 @@ function addToCart(article) {
 
     //Ecouter le panier avec 2 conditions couleur non nulle et quantité entre 1 et 100
     btn_envoyerPanier.addEventListener("click", (event)=>{
-        if (quantityPicked.value > 0 && quantityPicked.value <=100 && quantityPicked.value != 0){
+        if (quantityPicked.value <=100){
 
     //Recupération du choix de la couleur
-    let choixCouleur = colorPicked.value;
+    let choixCouleur = colorPicked.value
+    if(choixCouleur == ""){
+      alert("veuillez choisir une couleur"); 
+      return;
+    }
+    
                 
     //Recupération du choix de la quantité
     let choixQuantite = quantityPicked.value;
+    if(choixQuantite <= 0){
+        alert("veuillez choisir une quantiter"); 
+        return;
+      }
 
     //Récupération des options de l'article à ajouter au panier
     let optionsProduit = {
         idProduit: idProduct,
         couleurProduit: choixCouleur,
-        quantiteProduit: Number(choixQuantite),
+        quantiteProduit: choixQuantite,
     };
-
     //Initialisation du local storage
     let produitLocalStorage = JSON.parse(localStorage.getItem("produit"));
+
+    const popupConfirmation =() =>{
+        if(window.confirm(`Votre commande de ${choixQuantite} ${article.name} ${choixCouleur} est ajoutée au panier
+           Pour consulter votre panier, cliquez sur OK`)){
+            window.location.href ="cart.html";
+        }
+    }
 
 
     //Importation dans le local storage
@@ -96,13 +110,20 @@ function addToCart(article) {
             let newQuantite =
             parseInt(optionsProduit.quantiteProduit) + parseInt(resultFind.quantiteProduit);
             resultFind.quantiteProduit = newQuantite;
+            if (newQuantite>100){
+                alert("la quantiter maximum est de 100")
+                return
+            }
             localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
             console.table(produitLocalStorage);
+            
+            popupConfirmation();
         //Si le produit commandé n'est pas dans le panier
         } else {
             produitLocalStorage.push(optionsProduit);
             localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
             console.table(produitLocalStorage);
+            popupConfirmation();
         }
     //Si le panier est vide
     } else {
@@ -110,6 +131,7 @@ function addToCart(article) {
         produitLocalStorage.push(optionsProduit);
         localStorage.setItem("produit", JSON.stringify(produitLocalStorage));
         console.table(produitLocalStorage);
+        popupConfirmation();
     }}
     });
 }

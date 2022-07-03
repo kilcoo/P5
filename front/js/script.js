@@ -4,7 +4,6 @@ const fetchProduct = async () => {
   .then(res => res.json())
   .then(JSON => products = JSON)
   .catch((err) => console.log(err));
-  console.log(products)
   }
 fetchProduct();
 
